@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Add from './add'
 import Income from './income'
 import Expenses from './expenses'
+import Budget from './budget'
 
 class App extends Component {
   state = {
@@ -13,14 +14,6 @@ class App extends Component {
   }
 
   // Header functions
-  datumHelper = () => {
-    const now = new Date()
-    const month = now.getMonth()
-    const year = now.getFullYear()
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    return `${months[month]}, ${year}`
-  }
-
   incomeHelper = () => {
     const incomeTotal = this.state.income.map(item => item.number).reduce((a, b) => a + b, 0)
     return {
@@ -77,39 +70,47 @@ class App extends Component {
     }
   }
 
+  // Output Map Arrays
+  incomeArray = () => {
+    const { income } = this.state
+    return income.map(item => {
+      return (
+        <Income
+          key={item.id}
+          subject={item.subject}
+          number={item.number}
+          onClick={(type, id) => this.deleteItem('income', item.id)} />
+      )
+    })
+  }
+
+  expensesArray = () => {
+    const { expenses } = this.state
+    expenses.map(item => {
+      return (
+        <Expenses
+          key={item.id}
+          subject={item.subject}
+          number={item.number}
+          percentage={item.percentage}
+          onClick={(type, id) => this.deleteItem('expenses', item.id)} />
+      )
+    })
+  }
+
   render () {
-    const { income, expenses } = this.state
     return (
       <div>
         <div className="top">
-          <div className="budget">
-            <div className="budget__title">
-              Available Budget in <span className="budget__title--month">{this.datumHelper()}</span>:
-            </div>
-
-            <div className="budget__value">{this.availableHelper()}</div>
-
-            <div className="budget__income clearfix">
-              <div className="budget__income--text">Income</div>
-              <div className="right">
-                <div className="budget__income--value">+ {this.incomeHelper().string}</div>
-                <div className="budget__income--percentage">&nbsp;</div>
-              </div>
-            </div>
-
-            <div className="budget__expenses clearfix">
-              <div className="budget__expenses--text">Expenses</div>
-              <div className="right clearfix">
-                <div className="budget__expenses--value">- {this.expensesHelper().string}</div>
-                <div className="budget__expenses--percentage">{this.percentageGeneralHelper()}</div>
-              </div>
-
-            </div>
-          </div>
+          <Budget
+            income={this.incomeHelper().string}
+            expenses={this.expensesHelper().string}
+            available={this.availableHelper()}
+            percentage={this.percentageGeneralHelper()}
+          />
         </div>
 
         <div className="bottom">
-
           <Add
             value={this.state.sign}
             onChangeSign={(e) => this.setState({ sign: e.target.value })}
@@ -121,39 +122,13 @@ class App extends Component {
             <div className="income">
               <h2 className="icome__title">Income</h2>
               <div className="income__list">
-
-                {
-                  income.map(item => {
-                    return (
-                      <Income
-                        key={item.id}
-                        subject={item.subject}
-                        number={item.number}
-                        onClick={(type, id) => this.deleteItem('income', item.id)} />
-                    )
-                  })
-                }
-
+                {this.incomeArray()}
               </div>
             </div>
-
             <div className="expenses">
               <h2 className="expenses__title">Expenses</h2>
               <div className="expenses__list">
-
-                {
-                  expenses.map(item => {
-                    return (
-                      <Expenses
-                        key={item.id}
-                        subject={item.subject}
-                        number={item.number}
-                        percentage={item.percentage}
-                        onClick={(type, id) => this.deleteItem('expenses', item.id)} />
-                    )
-                  })
-                }
-
+                {this.expensesArray()}
               </div>
             </div>
           </div>
