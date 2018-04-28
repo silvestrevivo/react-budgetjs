@@ -5,12 +5,16 @@ import Expenses from './expenses'
 import Budget from './budget'
 
 class App extends Component {
-  state = {
-    sign: 'income',
-    subject: '',
-    number: null,
-    income: [],
-    expenses: []
+  constructor (props) {
+    super(props)
+    this.inputRef = React.createRef()
+    this.state = {
+      sign: 'income',
+      subject: '',
+      number: null,
+      income: [],
+      expenses: []
+    }
   }
 
   // Header functions
@@ -43,18 +47,26 @@ class App extends Component {
   }
 
   // Input Functions
-  handleInput = () => {
-    const { sign, number, subject, income, expenses } = this.state
+  onSubmit = (e) => {
+    e.preventDefault()
+    const form = this.inputRef.current
+    const sign = form.elements['select'].value
+    const subject = form.elements['subject'].value
+    const number = form.elements['number'].value
+    const { income, expenses } = this.state
     const id = Math.random()
-    if (sign === 'income' && subject.length > 0 && number !== null) {
+
+    if (sign === 'income' && subject.length > 0 && number.length > 0) {
       this.setState({
         income: [...income, { id, subject, number: parseFloat(number) }]
       })
-    } else if (sign === 'expense' && subject.length > 0 && number !== null) {
+    } else if (sign === 'expense' && subject.length > 0 && number.length > 0) {
+      console.log('si')
       this.setState({
         expenses: [...expenses, { id, subject, number: parseFloat(number), percentage: 0 }]
       })
     }
+    this.inputRef.current.reset()
   }
 
   deleteItem = (type, id) => {
@@ -86,7 +98,7 @@ class App extends Component {
 
   expensesArray = () => {
     const { expenses } = this.state
-    expenses.map(item => {
+    return expenses.map(item => {
       return (
         <Expenses
           key={item.id}
@@ -111,12 +123,8 @@ class App extends Component {
         </div>
 
         <div className="bottom">
-          <Add
-            value={this.state.sign}
-            onChangeSign={(e) => this.setState({ sign: e.target.value })}
-            onChangeSubject={(e) => this.setState({ subject: e.target.value })}
-            onChangeNumber={(e) => this.setState({ number: e.target.value })}
-            onClick={this.handleInput} />
+
+          <Add onSubmit={this.onSubmit} inputRef={this.inputRef} />
 
           <div className="container clearfix">
             <div className="income">

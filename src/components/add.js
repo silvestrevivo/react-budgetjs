@@ -3,31 +3,29 @@ import PropTypes from 'prop-types'
 
 class Add extends Component {
   // state = {  }
+
   render () {
     return (
       <div className="add">
-        <div className="add__container">
-          <select className="add__type" value={this.props.value} onChange={this.props.onChangeSign}>
+        <form className="add__container" onSubmit={this.props.onSubmit} ref={this.props.inputRef}>
+          <select className="add__type" name="select" >
             <option value="income">+</option>
             <option value="expense">-</option>
           </select>
-          <input type="text" className="add__description" placeholder="Add description" onChange={this.props.onChangeSubject} />
-          <input type="number" className="add__value" placeholder="Value" onChange={this.props.onChangeNumber} />
-          <button className="add__btn" onClick={this.props.onClick}>
+          <input type="text" className="add__description" name="subject" placeholder="Add description" />
+          <input type="number" className="add__value" placeholder="Value" name="number" />
+          <button className="add__btn" type="submit">
             <i className="ion-ios-checkmark-outline" />
           </button>
-        </div>
+        </form>
       </div>
     )
   }
 }
 
 Add.propTypes = {
-  value: PropTypes.string,
-  onChangeSign: PropTypes.func,
-  onChangeSubject: PropTypes.func,
-  onChangeNumber: PropTypes.func,
-  onClick: PropTypes.func
+  inputRef: PropTypes.obj,
+  onSubmit: PropTypes.func
 }
 
 export default Add
