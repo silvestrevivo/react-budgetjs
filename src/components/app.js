@@ -59,7 +59,6 @@ class App extends Component {
         income: [...income, { id, subject, number: parseFloat(number) }]
       })
     } else if (sign === 'expense' && subject.length > 0 && number.length > 0) {
-      console.log('si')
       this.setState({
         expenses: [...expenses, { id, subject, number: parseFloat(number), percentage: 0 }]
       })
@@ -125,7 +124,7 @@ class App extends Component {
 
           <Add
             onSubmit={this.onSubmit}
-            inputRef={this.inputRef}
+            ref={this.inputRef}
             onChange={(e) => this.setState({ sign: e.target.value })}
             sign={sign} />
 
