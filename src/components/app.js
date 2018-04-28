@@ -10,8 +10,6 @@ class App extends Component {
     this.inputRef = React.createRef()
     this.state = {
       sign: 'income',
-      subject: '',
-      number: null,
       income: [],
       expenses: []
     }
@@ -111,6 +109,7 @@ class App extends Component {
   }
 
   render () {
+    const { sign } = this.state
     return (
       <div>
         <div className="top">
@@ -124,7 +123,11 @@ class App extends Component {
 
         <div className="bottom">
 
-          <Add onSubmit={this.onSubmit} inputRef={this.inputRef} />
+          <Add
+            onSubmit={this.onSubmit}
+            inputRef={this.inputRef}
+            onChange={(e) => this.setState({ sign: e.target.value })}
+            sign={sign} />
 
           <div className="container clearfix">
             <div className="income">
