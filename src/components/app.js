@@ -16,32 +16,18 @@ class App extends Component {
   }
 
   // Header functions
-  incomeHelper = () => {
-    const incomeTotal = this.state.income.map(item => item.number).reduce((a, b) => a + b, 0)
-    return {
-      string: `${String(incomeTotal).replace(/(.)(?=(\d{3})+$)/g, '$1,')},00`,
-      number: incomeTotal
-    }
-  }
-
-  expensesHelper = () => {
-    const expensesTotal = this.state.expenses.map(item => item.number).reduce((a, b) => a + b, 0)
-    return {
-      string: `${String(expensesTotal).replace(/(.)(?=(\d{3})+$)/g, '$1,')},00`,
-      number: expensesTotal
-    }
-  }
-
-  availableHelper = () => {
-    const availableTotal = this.incomeHelper().number - this.expensesHelper().number
-    return availableTotal >= 0 ? `+ ${String(availableTotal).replace(/(.)(?=(\d{3})+$)/g, '$1,')}` : 'No money!!'
-  }
-
-  percentageGeneralHelper = () => {
-    const incomeTotal = this.incomeHelper().number
-    const expensesTotal = this.expensesHelper().number
+  headerFunctions = () => {
+    const { income, expenses } = this.state
+    const incomeTotal = income.map(item => item.number).reduce((a, b) => a + b, 0)
+    const expensesTotal = expenses.map(item => item.number).reduce((a, b) => a + b, 0)
+    const availableTotal = incomeTotal - expensesTotal
     const percentage = Math.round((expensesTotal / incomeTotal) * 100)
-    return isNaN(percentage) || (incomeTotal < expensesTotal) ? '---' : `${percentage} % `
+    return {
+      incomeTotal: `${String(incomeTotal).replace(/(.)(?=(\d{3})+$)/g, '$1,')},00`,
+      expensesTotal: `${String(expensesTotal).replace(/(.)(?=(\d{3})+$)/g, '$1,')},00`,
+      availableTotal: availableTotal >= 0 ? `+ ${String(availableTotal).replace(/(.)(?=(\d{3})+$)/g, '$1,')}` : 'No money!!',
+      percentageTotal: isNaN(percentage) || (incomeTotal < expensesTotal) ? '---' : `${percentage} % `
+    }
   }
 
   // Input Functions
@@ -129,10 +115,10 @@ class App extends Component {
       <div>
         <div className="top">
           <Budget
-            income={this.incomeHelper().string}
-            expenses={this.expensesHelper().string}
-            available={this.availableHelper()}
-            percentage={this.percentageGeneralHelper()}
+            income={this.headerFunctions().incomeTotal}
+            expenses={this.headerFunctions().expensesTotal}
+            available={this.headerFunctions().availableTotal}
+            percentage={this.headerFunctions().percentageTotal}
           />
         </div>
 
