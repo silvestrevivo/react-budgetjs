@@ -59,8 +59,16 @@ class App extends Component {
         income: [...income, { id, subject, number: parseFloat(number) }]
       })
     } else if (sign === 'expense' && subject.length > 0 && number.length > 0) {
+      const expenseWithOutPercentage = [...expenses, { id, subject, number: parseFloat(number), percentage: 0 }]
+      const expensesWithOutPercentageTotal = expenseWithOutPercentage.map(item => item.number).reduce((a, b) => a + b, 0)
+      const expensesWithPercentage = expenseWithOutPercentage.map(item => {
+        return {
+          ...item,
+          percentage: Math.round((item.number / expensesWithOutPercentageTotal) * 100)
+        }
+      })
       this.setState({
-        expenses: [...expenses, { id, subject, number: parseFloat(number), percentage: 0 }]
+        expenses: expensesWithPercentage
       })
     }
     this.inputRef.current.reset()
@@ -73,8 +81,16 @@ class App extends Component {
         income: income.filter(item => item.id !== id)
       })
     } else if (type === 'expenses') {
+      const expensesFiltered = expenses.filter(item => item.id !== id)
+      const expensesFilteredTotal = expensesFiltered.map(item => item.number).reduce((a, b) => a + b, 0)
+      const expensesFilteredWithPercentageAdjusted = expensesFiltered.map(item => {
+        return {
+          ...item,
+          percentage: Math.round((item.number / expensesFilteredTotal) * 100)
+        }
+      })
       this.setState({
-        expenses: expenses.filter(item => item.id !== id)
+        expenses: expensesFilteredWithPercentageAdjusted
       })
     }
   }
